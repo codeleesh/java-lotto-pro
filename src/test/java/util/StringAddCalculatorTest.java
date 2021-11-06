@@ -3,8 +3,7 @@ package util;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class StringAddCalculatorTest {
 
@@ -43,9 +42,13 @@ class StringAddCalculatorTest {
 
     @Test
     void splitAndSum_예외_음수() {
-        Exception exception = assertThrows(RuntimeException.class, () -> StringAddCalculator.splitAndSum("-1,2,3"));
-        String expectedMessage = "For input only positive integers";
-        String actualMessage = exception.getMessage();
-        assertTrue(actualMessage.contains(expectedMessage));
+        assertThatThrownBy(() -> StringAddCalculator.splitAndSum("-1,2,3")).isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("Invalid character format.");
+    }
+
+    @Test
+    void splitAndSum_예외_옳지않은_문자열() {
+        assertThatThrownBy(() -> StringAddCalculator.splitAndSum("1[2")).isInstanceOf(NumberFormatException.class)
+                .hasMessageContaining("Invalid character format.");
     }
 }
